@@ -31,6 +31,8 @@ export class Mounter {
   private rootCss = '';
   private mainCss = '';
   private frame = 0;
+  private header?: Element;
+  private seen: unknown[] = [];
   private resizeObserver = new ResizeObserver(() => this.schedule());
 
   start() {
@@ -44,9 +46,22 @@ export class Mounter {
     window.addEventListener('popstate', schedule);
     window.addEventListener('resize', schedule);
     // HA swaps hui-root and its lovelace object without telling anyone, so
-    // check once a second as well. It only reads a few properties.
-    window.setInterval(schedule, 1000);
+    // poll once a second as well. The poll only compares references; the
+    // layout is measured only when one of them changed, because measuring
+    // forces a synchronous reflow that slow wall tablets feel while scrolling.
+    window.setInterval(() => this.poll(), 1000);
     this.schedule();
+  }
+
+  private snapshot(): unknown[] {
+    const root = getHuiRoot() as HuiRoot | null;
+    const lovelace = root?.lovelace;
+    return [root, lovelace, this.draft ?? lovelace?.config?.sidebar, lovelace?.editMode, window.location.href, window.innerWidth];
+  }
+
+  private poll() {
+    const next = this.snapshot();
+    if (next.length !== this.seen.length || next.some((v, i) => v !== this.seen[i])) this.schedule();
   }
 
   schedule() {
@@ -58,6 +73,7 @@ export class Mounter {
   }
 
   private check() {
+    this.seen = this.snapshot();
     const root = getHuiRoot() as HuiRoot | null;
     const lovelace = root?.lovelace;
     const raw = this.draft ?? lovelace?.config?.sidebar;
@@ -123,6 +139,13 @@ export class Mounter {
 
     // The sidebar sits below HA's header (which kiosk-mode may hide).
     const header = root.shadowRoot!.querySelector<HTMLElement>('.header');
+    // kiosk-mode and HA show or hide the header on their own; its size
+    // changing is the signal to move the sidebar.
+    if (header !== this.header) {
+      if (this.header) this.resizeObserver.unobserve(this.header);
+      if (header) this.resizeObserver.observe(header);
+      this.header = header ?? undefined;
+    }
     const top = header && getComputedStyle(header).display !== 'none' ? Math.max(header.getBoundingClientRect().bottom, 0) : 0;
 
     const style = this.panel!.style;
@@ -140,6 +163,8 @@ export class Mounter {
     this.editor?.remove();
     this.editor = undefined;
     this.draft = undefined;
+    if (this.header) this.resizeObserver.unobserve(this.header);
+    this.header = undefined;
     if (this.root) {
       this.resizeObserver.unobserve(this.root);
       adopt(this.root.shadowRoot, this.rootSheet, false);
