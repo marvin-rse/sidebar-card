@@ -69,6 +69,7 @@ export class SidebarPanel extends LitElement {
   private _templateSub?: Unsubscribe;
   private _template?: string;
   private _dateTimer?: number;
+  private _watched?: { config: ResolvedConfig; ids: string[] };
 
   connectedCallback() {
     super.connectedCallback();
@@ -81,6 +82,41 @@ export class SidebarPanel extends LitElement {
     this._templateSub?.();
     this._templateSub = undefined;
     this._template = undefined;
+  }
+
+  /** Entities whose state the sidebar itself shows (embedded cards aside). */
+  private _watchedIds(c: ResolvedConfig) {
+    if (this._watched?.config === c) return this._watched.ids;
+    const ids = new Set<string>();
+    if (c.weatherEntity) ids.add(c.weatherEntity);
+    c.presence.forEach((p) => ids.add(p.entity));
+    c.menu.forEach((m) => m.state && ids.add(m.state));
+    for (const g of c.glance.items) {
+      ids.add(g.entity);
+      if (typeof g.show === 'object' && g.show.entity) ids.add(g.show.entity);
+    }
+    if (c.glance.items.length) ids.add('sun.sun');
+    for (const item of c.trends?.items ?? []) {
+      for (const e of item.entities ?? (item.entity ? [item.entity] : [])) ids.add(typeof e === 'string' ? e : e.entity);
+    }
+    this._watched = { config: c, ids: [...ids] };
+    return this._watched.ids;
+  }
+
+  // HA hands over a new hass object for every state change anywhere in the
+  // house, often several per second. Only re-render when something the
+  // sidebar shows changed; embedded cards still get every update and filter
+  // for themselves.
+  protected shouldUpdate(changed: Map<string, unknown>) {
+    if (changed.size !== 1 || !changed.has('hass')) return true;
+    const prev = changed.get('hass') as HomeAssistant | undefined;
+    const next = this.hass;
+    if (!prev || !next || !this.config) return true;
+    if (prev.language !== next.language || prev.locale !== next.locale || prev.entities !== next.entities) return true;
+    if (this._watchedIds(this.config).some((id) => prev.states[id] !== next.states[id])) return true;
+    const cards = this.renderRoot.querySelector('sidebar-card-cards') as (HTMLElement & { hass?: HomeAssistant }) | null;
+    if (cards) cards.hass = next;
+    return false;
   }
 
   protected willUpdate() {
