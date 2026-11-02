@@ -1,107 +1,107 @@
 # Sidebar Card 2
 
-Eine globale Sidebar für Home-Assistant-Dashboards – modern, theme-fähig und **direkt im Dashboard per visuellem Editor konfigurierbar**.
+A global sidebar for Home Assistant dashboards – modern, theme-aware and **configurable right in the dashboard with a visual editor**.
 
-Neufassung von [DBuit/sidebar-card](https://github.com/DBuit/sidebar-card) (Lit 3, ohne moment.js/card-tools, ~100 KB statt ~320 KB). Bestehende `sidebar:`-Konfigurationen funktionieren unverändert weiter. Ideen übernommen aus den Forks von [knstyl](https://github.com/knstyl/sidebar-card) (Benachrichtigungen, Personen, Statusleiste, Verläufe) und [Phantom3912/Bobsilvio](https://github.com/Phantom3912/sidebar-card) (Menü-Stile, Farben pro Eintrag).
+A rewrite of [DBuit/sidebar-card](https://github.com/DBuit/sidebar-card) (Lit 3, no moment.js/card-tools, ~100 KB instead of ~320 KB). Existing `sidebar:` configurations keep working unchanged. Ideas borrowed from the forks by [knstyl](https://github.com/knstyl/sidebar-card) (notifications, people, status bar, trends) and [Phantom3912/Bobsilvio](https://github.com/Phantom3912/sidebar-card) (menu styles, per-item colors).
 
-Getestet gegen Home Assistant 2026.10 (Frontend 20260930).
+Tested against Home Assistant 2026.10 (frontend 20260930).
 
-![Übersicht im hellen Theme](screenshots/overview-light.png)
+![Overview, light theme](screenshots/overview-light.png)
 
-<sub>Alle Screenshots zeigen Demo-Daten.</sub>
+<sub>All screenshots show demo data.</sub>
 
 ## Screenshots
 
-### Hell und dunkel
+### Light and dark
 
-Die Sidebar übernimmt Farben und Schrift aus dem aktiven HA-Theme.
+The sidebar takes its colors and font from the active Home Assistant theme.
 
-![Übersicht im dunklen Theme mit breitem Menü-Stil](screenshots/overview-dark.png)
+![Overview, dark theme with the wide menu style](screenshots/overview-dark.png)
 
-### Menü-Stile (`menuStyle`)
+### Menu styles (`menuStyle`)
 
-| `list` | `wide` | `buttons` (mit Analoguhr) | `grid` |
+| `list` | `wide` | `buttons` (with analog clock) | `grid` |
 | :---: | :---: | :---: | :---: |
-| <img src="screenshots/menu-list.png" width="200" alt="Menü-Stil Liste"> | <img src="screenshots/menu-wide.png" width="200" alt="Menü-Stil breite Pills"> | <img src="screenshots/menu-buttons.png" width="200" alt="Menü-Stil Kacheln mit Analoguhr"> | <img src="screenshots/menu-grid.png" width="200" alt="Menü-Stil Raster"> |
+| <img src="screenshots/menu-list.png" width="200" alt="List menu style"> | <img src="screenshots/menu-wide.png" width="200" alt="Wide pill menu style"> | <img src="screenshots/menu-buttons.png" width="200" alt="Button tiles with analog clock"> | <img src="screenshots/menu-grid.png" width="200" alt="Grid menu style"> |
 
-### Benachrichtigungen und Verläufe
+### Notifications and trends
 
-| Benachrichtigungen (`notifications`) | Verläufe (`trends`) |
+| Notifications (`notifications`) | Trends (`trends`) |
 | :---: | :---: |
-| <img src="screenshots/notifications.png" width="260" alt="Benachrichtigungs-Panel"> | <img src="screenshots/trends.png" width="300" alt="Verlaufsdiagramm mit zwei Sensoren"> |
+| <img src="screenshots/notifications.png" width="260" alt="Notification panel"> | <img src="screenshots/trends.png" width="300" alt="Trend chart with two sensors"> |
 
-Hinweiszeilen wie „Haustür ist offen“ (`glanceBar` mit `position: attention`) und der Benachrichtigungs-Stapel bleiben unten in der Sidebar sichtbar, auch wenn der Inhalt darüber scrollt.
+Alert rows such as "Front door is open" (`glanceBar` with `position: attention`) and the notification stack stay pinned to the bottom of the sidebar while the content above scrolls.
 
-### Visueller Editor
+### Visual editor
 
-![Editor, Reiter Menü](screenshots/editor-menu.png)
+![Editor, menu tab](screenshots/editor-menu.png)
 
-![Editor, Reiter Layout](screenshots/editor-layout.png)
+![Editor, layout tab](screenshots/editor-layout.png)
 
 ## Installation
 
 ### HACS
 
-1. **HACS → ⋮ → Benutzerdefinierte Repositories**: `https://github.com/marvin-rse/sidebar-card`, Typ **Dashboard**.
-2. „Sidebar Card 2“ suchen und herunterladen.
-3. Prüfen, dass unter **Einstellungen → Dashboards → ⋮ → Ressourcen** genau ein Eintrag für `sidebar-card.js` steht (HACS legt ihn meist selbst an).
-4. Browser bzw. Tablet-App neu laden.
+1. **HACS → ⋮ → Custom repositories**: add `https://github.com/marvin-rse/sidebar-card` with type **Dashboard**.
+2. Search for "Sidebar Card 2" and download it.
+3. Check that **Settings → Dashboards → ⋮ → Resources** contains exactly one entry for `sidebar-card.js` (HACS usually adds it for you).
+4. Reload the browser or the companion app.
 
-Wer bisher DBuit/sidebar-card über HACS genutzt hat, entfernt diese vorher – beide Repositories heißen `sidebar-card`.
+If you used DBuit/sidebar-card through HACS before, remove it first – both repositories are named `sidebar-card`.
 
-### Manuell
+### Manual
 
-`sidebar-card.js` aus dem [neuesten Release](https://github.com/marvin-rse/sidebar-card/releases/latest) nach `/config/www/sidebar-card/` kopieren und als Ressource `/local/sidebar-card/sidebar-card.js` (Typ: JavaScript-Modul) eintragen.
+Copy `sidebar-card.js` from the [latest release](https://github.com/marvin-rse/sidebar-card/releases/latest) to `/config/www/sidebar-card/` and add `/local/sidebar-card/sidebar-card.js` as a resource (type: JavaScript module).
 
-Sind alte und neue Version gleichzeitig geladen, baut nur eine davon eine Sidebar; in der Browser-Konsole erscheint dann ein Hinweis.
+If the old and the new version are loaded at the same time, only one of them builds a sidebar and the browser console shows a hint.
 
-## Bearbeiten
+## Editing
 
-Dashboard öffnen → **Bearbeiten** (oder `?edit=1` an die URL hängen). In der Sidebar erscheint oben rechts ein **Zahnrad**. Es öffnet den Editor mit Live-Vorschau:
+Open the dashboard and choose **Edit** (or append `?edit=1` to the URL). A **gear button** appears in the top right corner of the sidebar. It opens the editor with a live preview:
 
-| Reiter | Inhalt |
+| Tab | Contents |
 | --- | --- |
-| Kopfbereich | Titel, Uhr (digital/analog), Datum, Wetter, Personen, Hinweis-Template |
-| Menü | Menü-Stil, Einträge mit Symbol, Aktion beim Tippen/Halten, Aktiv-Entität, Bedingung, Farben; „Ansichten übernehmen“ |
-| Status | HA-Benachrichtigungen, Statusleiste bzw. Hinweiszeilen |
-| Verläufe | Wischbare Diagramme, Zeiträume, Auto-Weiterblättern |
-| Karten | Beliebige Lovelace-Karten unten in der Sidebar (YAML) |
-| Layout | Breiten je Gerät, Breakpoints, Akzentfarbe, HA-Kopfzeile/-Seitenleiste ausblenden, eigenes CSS |
-| YAML | Die komplette Konfiguration |
+| Header | Title, clock (digital/analog), date, weather, people, message template |
+| Menu | Menu style; items with icon, tap/hold action, active entity, condition, colors; "Add views" |
+| Status | Home Assistant notifications, status bar or alert rows |
+| Trends | Swipeable charts, ranges, auto advance |
+| Cards | Any Lovelace cards at the bottom of the sidebar (YAML) |
+| Layout | Width per device, breakpoints, accent color, hide HA header/sidebar, custom CSS |
+| YAML | The complete configuration |
 
-Gespeichert wird in die Dashboard-Konfiguration (Schlüssel `sidebar:`), genau wie bisher.
+The editor speaks English and German, following the Home Assistant language. It saves into the dashboard configuration (key `sidebar:`), just like before.
 
-## Konfiguration (YAML)
+## Configuration (YAML)
 
 ```yaml
 sidebar:
   digitalClock: true
   date: true
-  dateFormat: "dddd, D. MMMM"     # optional, Moment-Tokens; leer = automatisch
+  dateFormat: "dddd, MMMM D"      # optional, moment-style tokens; empty = automatic
   weatherEntity: weather.home
   presence: [person.alex, person.sam]
   template: |
-    <li>{% if now().hour < 12 %}Guten Morgen{% else %}Hallo{% endif %}</li>
+    <li>{% if now().hour < 12 %}Good morning{% else %}Hello{% endif %}</li>
   menuStyle: wide                  # list | wide | buttons | grid
   showLabel: true
   sidebarMenu:
     - name: Home
       icon: mdi:home
-      tap_action: { action: navigate, navigation_path: /wandtablet/home }
-    - name: Licht
+      tap_action: { action: navigate, navigation_path: /wall-tablet/home }
+    - name: Lights
       icon: mdi:sofa
-      state: light.wohnzimmer      # hervorgehoben, solange an
-      tap_action: { action: toggle, entity: light.wohnzimmer }
-      hold_action: { action: more-info, entity: light.wohnzimmer }
-      conditional: "{{ is_state('input_boolean.gaeste', 'off') }}"
+      state: light.living_room     # highlighted while on
+      tap_action: { action: toggle, entity: light.living_room }
+      hold_action: { action: more-info, entity: light.living_room }
+      conditional: "{{ is_state('input_boolean.guests', 'off') }}"
       background_color: "rgba(255, 200, 140, .9)"
   notifications: true
   glanceBar:
-    position: attention            # oder Liste ohne position = Symbole unten
+    position: attention            # or a plain list = icons at the bottom
     items:
-      - entity: binary_sensor.haustuer
+      - entity: binary_sensor.front_door
         icon: mdi:door-open
-        label: "{name} offen"
+        label: "{name} is open"
       - entity: sensor.co2
         label: "CO₂ {state} {unit}"
         tone: { warn_above: 1000, alert_above: 1500 }
@@ -109,37 +109,37 @@ sidebar:
     ranges: [24h, 7d]
     autoAdvance: 10
     items:
-      - name: Temperatur
-        entities: [sensor.aussen, sensor.wohnzimmer]
+      - name: Temperature
+        entities: [sensor.outdoor_temperature, sensor.living_room_temperature]
       - entity: sensor.aqi
         bands: aqi
   cards:
     - type: custom:mushroom-media-player-card
-      entity: media_player.wohnzimmer
+      entity: media_player.living_room
   cardStyle: ":host { width: 100%; }"
   width: { mobile: 0, tablet: 25, desktop: 20 }
   breakpoints: { mobile: 768, tablet: 1024 }
   accentColor: "#ff9800"
   hideTopMenu: false
   hideHassSidebar: false
-  hideOnPath: [/wandtablet/kameras]
+  hideOnPath: [/wall-tablet/cameras]
   style: |
     :host { --sidebar-background: #10131a; }
 ```
 
-Aktionen sind die Standard-Aktionen von Home Assistant (`navigate`, `more-info`, `toggle`, `perform-action`, `url`, `assist`, `none`, inklusive `confirmation`).
+Actions are Home Assistant's standard actions (`navigate`, `more-info`, `toggle`, `perform-action`, `url`, `assist`, `none`), including `confirmation`.
 
-### Kompatibilität mit v1
+### Compatibility with v1
 
-- Menüeinträge mit `action:`/`navigation_path:`/`service:`/`service_data:` funktionieren weiter. Der Editor stellt sie beim Öffnen auf `tap_action` um.
-- `bottomCard: { type, cardOptions, cardStyle }` wird weiter gelesen. Der Editor macht daraus `cards:` und `cardStyle:`.
-- `conditional:` wird jetzt von Home Assistant selbst ausgewertet (echtes Jinja statt der bisherigen Muster-Erkennung).
-- `service-js` funktioniert weiter, ist aber nur im YAML-Reiter bearbeitbar. `this` ist jetzt das Menü-Element (mit `this.hass`).
-- CSS-Variablen `--sidebar-background`, `--sidebar-text-color`, `--sidebar-icon-color`, `--sidebar-selected-text-color`, `--sidebar-selected-icon-color` und die Uhr-Variablen (`--face-color` …) gelten weiter.
-- `?sidebarOff` in der URL deaktiviert `hideTopMenu`/`hideHassSidebar`. Im Bearbeitungsmodus bleibt die HA-Kopfzeile immer sichtbar.
-- Neues Standard-Datumsformat: „Montag, 2. November“ (vorher `DD MMMM`).
+- Menu items with `action:`/`navigation_path:`/`service:`/`service_data:` keep working. The editor converts them to `tap_action` when it opens.
+- `bottomCard: { type, cardOptions, cardStyle }` is still read. The editor turns it into `cards:` and `cardStyle:`.
+- `conditional:` is now rendered by Home Assistant itself (real Jinja instead of the previous pattern matching).
+- `service-js` still works but can only be edited in the YAML tab. `this` is now the menu element (with `this.hass`).
+- The CSS variables `--sidebar-background`, `--sidebar-text-color`, `--sidebar-icon-color`, `--sidebar-selected-text-color`, `--sidebar-selected-icon-color` and the clock variables (`--face-color` …) still apply.
+- `?sidebarOff` in the URL disables `hideTopMenu`/`hideHassSidebar`. In edit mode the HA header always stays visible.
+- New default date format: "Monday, November 2" (previously `DD MMMM`).
 
-## Entwicklung
+## Development
 
 ```sh
 npm install
@@ -148,6 +148,6 @@ npm run watch
 npm run typecheck
 ```
 
-## Lizenz
+## License
 
-MIT. Ursprüngliche sidebar-card von DBuit und Mitwirkenden.
+MIT. Original sidebar-card by DBuit and contributors.
